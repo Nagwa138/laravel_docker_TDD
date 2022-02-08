@@ -12,13 +12,23 @@
 </h1>
 <ul>
 
-@foreach($posts as $post)
+@forelse($posts as $post)
 
 <li>
-    {{$post->title}}
+    <a href="{{$post->path()}}">
+        {{$post->title}}
+    </a>
 </li>
 
-@endforeach
+@empty
+
+
+<li>
+    No Posts Found
+</li>
+
+
+@endforelse
 
 </ul>
 </body>

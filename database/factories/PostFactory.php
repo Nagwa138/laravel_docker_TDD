@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator as Faker;
+use App\Models\User;
 class PostFactory extends Factory
 {
     /**
@@ -13,11 +13,13 @@ class PostFactory extends Factory
      */
     public function definition()
     {
-        $num = rand(1, 1000);
 
         return [
-            'title' => 'title number '.$num,
-            'description' => 'description number '.$num
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'owner_id' =>function (){
+                return User::factory()->create()->id;
+            }
         ];
     }
 }

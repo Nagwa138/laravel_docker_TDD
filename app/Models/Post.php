@@ -10,4 +10,10 @@ class Post extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function path()
+    {
+        # code...
+        return "/posts/{$this->id}";
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 
 
 class PostController extends Controller
@@ -28,30 +29,38 @@ class PostController extends Controller
      */
     public function create()
     {
-        $rand = rand(100, 1000);
+//        DELETE ALL MODEL DATABASE ITEMS
+//        Post::truncate();
 
         $post = Post::create([
-            'title' => 'title '.$rand,
-            'description' => 'description '.$rand,
+            'title' =>   $this->faker->sentence,
+            'description' =>  $this->faker->paragraph,
+            'owner_id' =>function (){
+                return User::factory()->create()->id;
+            }
         ]);
 
-        return Post::all();
+        return $post;
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store()
     {
 
-        request()->validate(['title' => 'required', 'description' => 'required']);
+       $attributes = request()->validate([
+            'title' => 'required',
+            'description' => 'required'
+        ]);
 
-        Post::create(request(['title', 'description']));
+        auth()->user()->posts()->create($attributes);
 
-        return redirect()->route('posts');
+        return redirect('/posts');
+
     }
 
     /**
@@ -60,10 +69,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        $post = Post::find($id);
-
         return view('posts.show', compact('post'));
     }
 
