@@ -12,6 +12,12 @@ class UserTest extends TestCase
 
     use RefreshDatabase;
 
+
+    /**
+     * BE METHOD IS USER AUTHENTICATED BUT NOT THE OWNER
+     * ACTING AS IS USER AND NOT AUTHENTICATED
+     */
+
     /** @test  */
     public function has_posts()
     {

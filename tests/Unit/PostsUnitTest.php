@@ -14,10 +14,20 @@ class PostsUnitTest extends TestCase
     /** @test */
     public function a_post_has_path()
     {
-        # code...
+
         $post = Post::factory()->create();
 
         $this->assertEquals('/posts/' . $post->id, $post->path());
     }
+    /** @test */
+    public function it_has_owner()
+    {
+
+        $post = Post::factory()->create();
+
+        $this->assertInstanceOf('App\Models\User', $post->owner);
+
+    }
+
 
 }

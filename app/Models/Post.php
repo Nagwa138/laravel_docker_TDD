@@ -16,4 +16,8 @@ class Post extends Model
         # code...
         return "/posts/{$this->id}";
     }
+
+    public function owner(){
+        return $this->belongsTo(User::class);
+    }
 }

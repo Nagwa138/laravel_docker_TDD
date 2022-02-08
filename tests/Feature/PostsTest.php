@@ -12,12 +12,27 @@ class PostsTest extends TestCase
 {
    use WithFaker, RefreshDatabase;
 
+
+
     /** @test */
+    public function guests_cannot_create_posts()
+    {
+        $post = Post::factory()->create();
+        $this->post('/posts', $post->toArray())->assertRedirect('login');
+        $this->get('/posts/create')->assertRedirect('login');
+        $this->get('/posts')->assertRedirect('login');
+        $this->get($post->path())->assertRedirect('login');
+    }
+
+
+        /** @test */
     public function a_user_can_create_post(){
 
-        $this->withoutExceptionHandling();
+//        $this->withoutExceptionHandling();
 
         $this->actingAs(User::factory()->create());
+
+        $this->get('/posts/create')->assertStatus(200);
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -75,6 +90,18 @@ class PostsTest extends TestCase
 
 
 
+    /** @test */
+    public function an_authenticated_can_view_post_of_other()
+    {
+        $this->actingAs(User::factory()->create());
+
+        $post = Post::factory()->create();
+
+        $this->get($post->path())->assertStatus(403);
+
+    }
+
+
 
       /** @test */
       public function a_post_requires_an_authenticated_owner()
@@ -86,14 +113,19 @@ class PostsTest extends TestCase
 
 
     /** @test */
-    public function a_user_can_view_a_project()
+    public function a_user_can_view_his_post()
     {
         // $this->withoutExceptionHandling();
 
-        $this->actingAs(User::factory()->create());
+        $this->be(User::factory()->create());
 
 
-        $post = Post::factory()->create();
+        $post = auth()->user()->posts()->create(
+            [
+                'title' => $this->faker->sentence,
+                'description' => $this->faker->paragraph
+            ]
+        );
 
         $this->get($post->path())
             ->assertSee($post->title)
