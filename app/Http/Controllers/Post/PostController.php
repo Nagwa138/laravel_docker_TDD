@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Post;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\User;
-use Faker\Generator;
-use Illuminate\Container\Container;
+use Illuminate\Http\Request;
+use function abort;
+use function auth;
+use function redirect;
+use function request;
+use function view;
 
 
 class PostController extends Controller

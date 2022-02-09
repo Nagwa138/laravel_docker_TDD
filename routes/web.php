@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Post\PostPointsController;
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,16 +20,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/posts' , App\Http\Controllers\PostController::class)->middleware('auth');
+
+Route::resource('/posts' , \App\Http\Controllers\Post\PostController::class)->middleware('auth');
+Route::resource('/posts/{post}/points' , App\Http\Controllers\Post\PostPointsController::class)
+    ->middleware('auth');
 
 Route::get('new_user', function(){
-// return User::factory()->create()->id;
+    // return User::factory()->create()->id;
 
-return User::all();
+    return Post::with('points')->get();
 });
 
 Auth::routes();
 
-
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Route::patch('/posts/{post}/points' , [App\Http\Controllers\Post\PostPointsController::class, 'store'])->middleware('auth');

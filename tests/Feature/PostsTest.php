@@ -10,7 +10,7 @@ use App\Models\User;
 
 class PostsTest extends TestCase
 {
-   use WithFaker, RefreshDatabase;
+   use WithFaker;
 
 
 
@@ -21,7 +21,7 @@ class PostsTest extends TestCase
         $this->post('/posts', $post->toArray())->assertRedirect('login');
         $this->get('/posts/create')->assertRedirect('login');
         $this->get('/posts')->assertRedirect('login');
-        $this->get($post->path())->assertRedirect('login');
+        $this->get($post->postManager->path())->assertRedirect('login');
     }
 
 
@@ -30,7 +30,8 @@ class PostsTest extends TestCase
 
 //        $this->withoutExceptionHandling();
 
-        $this->actingAs(User::factory()->create());
+                $this->sign_in();
+
 
         $this->get('/posts/create')->assertStatus(200);
 
@@ -51,7 +52,8 @@ class PostsTest extends TestCase
     /** @test */
     public function a_post_requires_title()
     {
-        $this->actingAs(User::factory()->create());
+                $this->sign_in();
+
 
         $attributes = Post::factory()->raw(['title' => '']);
 
@@ -61,7 +63,8 @@ class PostsTest extends TestCase
       /** @test */
     public function a_post_requires_description()
     {
-        $this->actingAs(User::factory()->create());
+                $this->sign_in();
+
 
         $attributes = Post::factory()->raw(['description' => '']);
 
@@ -75,7 +78,8 @@ class PostsTest extends TestCase
            /**
             * Only Authenticated Users Can Create Posts
             */
-//          $this->actingAs(User::factory()->create());
+//                  $this->sign_in();
+
 //
 //           $attributes = Post::factory()->raw(['owner_id' => null]);
 //
@@ -88,19 +92,16 @@ class PostsTest extends TestCase
 
        }
 
-
-
     /** @test */
     public function an_authenticated_can_view_post_of_other()
     {
-        $this->actingAs(User::factory()->create());
+        $this->sign_in();
 
         $post = Post::factory()->create();
 
-        $this->get($post->path())->assertStatus(403);
+        $this->get($post->postManager->path())->assertStatus(403);
 
     }
-
 
 
       /** @test */
@@ -119,7 +120,6 @@ class PostsTest extends TestCase
 
         $this->be(User::factory()->create());
 
-
         $post = auth()->user()->posts()->create(
             [
                 'title' => $this->faker->sentence,
@@ -127,7 +127,7 @@ class PostsTest extends TestCase
             ]
         );
 
-        $this->get($post->path())
+        $this->get($post->postManager->path())
             ->assertSee($post->title)
             ->assertSee($post->description);
     }

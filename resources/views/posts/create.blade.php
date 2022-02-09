@@ -2,38 +2,34 @@
 
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="">
-                    <div class="">{{ __('Add Post') }}</div>
 
-                    <div class="card-body">
-    <form action="{{route('posts.store')}}" method="post">
-        @csrf
-        <div class="form-group">
-            <label for="title">Title </label>
-            <input type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp">
-            <small id="titleHelp" class="form-text text-muted">We'll never share your title with anyone else.</small>
-        </div>
+                    <form class="box" action="{{route('posts.store')}}" method="post">
+                        @csrf
 
-        <div class="form-group">
-            <label for="description">Description </label>
-            <textarea rows="5" class="form-control"
-                      name="description" id="description"
-                      aria-describedby="descriptionHelp">
-            </textarea>
-            <small id="titleHelp" class="form-text text-muted">We'll never share your description with anyone else.</small>
-        </div>
+                        <div class="title">{{ __('Add Post') }}</div>
 
+                        <div class="field">
+                            <label class="label" for="title">Title</label>
+                            <div class="control">
+                                <input class="input" type="text"
+                                       name="title" id="title"
+                                       placeholder="China Trip">
+{{--                                <small id="titleHelp" class="form-text text-muted">We'll never share your title with anyone else.</small>--}}
+                            </div>
+                        </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+                        <div class="field">
+                            <label class="label" for="description">Description</label>
+                            <div class="control">
+                                <textarea rows="5" class="textarea"
+                                          name="description" id="description" placeholder="It was a ver great trip !!!!"
+                                          aria-describedby="descriptionHelp"></textarea>
+{{--                                <small id="descriptionHelp" class="form-text text-muted">We'll never share your description with anyone else.</small>--}}
+                            </div>
+                        </div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        <button class="button is-primary">Save</button>
+                    </form>
+
 
 @endsection
