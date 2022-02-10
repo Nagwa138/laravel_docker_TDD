@@ -8,17 +8,18 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesApplication;
 
     public function sign_in($user = null)
     {
 
-        $this->be($user ?: User::factory()->create());
+        $user = $user ?: User::factory()->create();
+
+        $this->be($user);
+
+        return $user;
 
     }
-
-    use CreatesApplication;
-
 
 
 }

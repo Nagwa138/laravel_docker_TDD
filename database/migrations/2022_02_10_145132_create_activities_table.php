@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostPointsTable extends Migration
+class CreateActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreatePostPointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_points', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->longText('body');
-            $table->boolean('completed')->default(false);
             $table->unsignedBigInteger('post_id');
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->text('description');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreatePostPointsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_points');
+        Schema::dropIfExists('activities');
     }
 }

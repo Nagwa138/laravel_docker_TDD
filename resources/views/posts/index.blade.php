@@ -23,6 +23,10 @@
     <div class="text-secondary">
         {{ substr($post->description, 0, 100) }} {{strlen($post->description) > 100? ' ...' : ''}}
     </div>
+
+    <div class="text-danger">
+        {{ $post->notes }}
+    </div>
 </div>
 @empty
 

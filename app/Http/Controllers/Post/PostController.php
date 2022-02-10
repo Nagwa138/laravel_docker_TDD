@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostValidation;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use function abort;
@@ -17,12 +18,11 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
         $posts = auth()->user()->posts;
-
 
         return view('posts.index', compact('posts'));
     }
@@ -54,17 +54,14 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store()
+    public function store(PostValidation $request): \Illuminate\Http\RedirectResponse
     {
 
-       $attributes = request()->validate([
-            'title' => 'required',
-            'description' => 'required'
-        ]);
+       $attributes = $request->validated();
 
-        auth()->user()->posts()->create($attributes);
+        $post = auth()->user()->posts()->create($attributes);
 
-        return redirect('/posts');
+        return redirect($post->path());
 
     }
 
@@ -76,9 +73,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        if(auth()->user()->isNot($post->owner)){
-            abort(403);
-        }
+        $this->authorize('update', $post);
 
         return view('posts.show', compact('post'));
     }
@@ -87,11 +82,11 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -99,11 +94,17 @@ class PostController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
-    public function update(Request $request, $id)
+    public function update(Post $post)
     {
-        //
+        $this->authorize('update', $post);
+
+        $attributes = request()->validate([
+            'notes' => 'min:3'
+        ]);
+
+        return $post->update($attributes);
     }
 
     /**

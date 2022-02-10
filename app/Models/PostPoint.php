@@ -11,4 +11,14 @@ class PostPoint extends Model
 
     protected $guarded = [];
 
+    protected $touches = ['post'];
+
+    public function post(){
+        return $this->belongsTo(Post::class);
+    }
+
+    public function path(){
+        return $this->post->path() . '/points/' . $this->id;
+    }
+
 }

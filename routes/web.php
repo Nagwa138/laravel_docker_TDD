@@ -5,6 +5,7 @@ use App\Http\Controllers\Post\PostPointsController;
 use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

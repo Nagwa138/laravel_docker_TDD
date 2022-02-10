@@ -39,13 +39,11 @@ class PostPointsController extends Controller
     public function store(Request $request,Post $post)
     {
 
-        if(auth()->user()->isNot($post->owner)){
-            abort(403);
-        }
+        $this->authorize('update', $post);
 
-       request()->validate([
+        request()->validate([
             'body' => 'required'
-       ]);
+        ]);
 
         $post->addPoint(request('body'));
 
@@ -79,11 +77,24 @@ class PostPointsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\PostPoint  $postPoint
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, PostPoint $postPoint)
+    public function update(Post $post, PostPoint $postPoint)
     {
-        //
+        $this->authorize('update', $post);
+
+        request()->validate([
+            'body' => 'required'
+        ]);
+
+        $postPoint = PostPoint::find(request()->point_id);
+
+        $postPoint->update([
+            'body' => request()->body,
+            'completed' => request()->completed == 'on'
+        ]);
+
+        return back();
     }
 
     /**

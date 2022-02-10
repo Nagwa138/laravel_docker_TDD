@@ -21,30 +21,82 @@ class PostsTest extends TestCase
         $this->post('/posts', $post->toArray())->assertRedirect('login');
         $this->get('/posts/create')->assertRedirect('login');
         $this->get('/posts')->assertRedirect('login');
-        $this->get($post->postManager->path())->assertRedirect('login');
+        $this->get($post->path())->assertRedirect('login');
     }
 
 
-        /** @test */
+    /** @test */
     public function a_user_can_create_post(){
 
-//        $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
-                $this->sign_in();
-
+        $this->sign_in();
 
         $this->get('/posts/create')->assertStatus(200);
 
         $attributes = [
             'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph
+            'description' => $this->faker->paragraph,
+            'notes' => $this->faker->paragraph,
         ];
 
-        $this->post('/posts', $attributes)->assertRedirect('/posts');
+        $response = $this->post('/posts', $attributes);
+
+        $response->assertRedirect(Post::where($attributes)->first()->path());
 
         $this->assertDatabaseHas('posts', $attributes);
 
-        $this->get('/posts')->assertSee($attributes['title']);
+        $this->get('/posts')
+            ->assertSee($attributes['title'])
+            ->assertSee($attributes['notes']);
+
+    }
+
+
+
+    /** @test */
+    public function a_user_can_update_post(){
+
+        $this->withoutExceptionHandling();
+
+        $this->sign_in();
+
+        $attributes = [
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'notes' => $this->faker->paragraph,
+        ];
+
+        $post = auth()->user()->posts()->create($attributes);
+
+        $notes = [
+            'notes' => $this->faker->sentence
+        ];
+
+        $this->patch($post->path(), $notes);
+
+        $this->assertDatabaseHas('posts', $notes);
+
+        $this->get('/posts')
+            ->assertSee($notes['notes']);
+
+    }
+
+
+    /** @test */
+    public function a_user_can_only_update_his_post(){
+
+
+       $post = Post::factory()->create();
+
+        $notes = [
+            'notes' => $this->faker->sentence
+        ];
+
+        $this->sign_in();
+
+        $this->patch($post->path(), $notes)
+            ->assertStatus(403);
 
     }
 
@@ -60,11 +112,21 @@ class PostsTest extends TestCase
         $this->post('/posts', $attributes)->assertSessionHasErrors('title');
     }
 
-      /** @test */
+
+    /** @test */
+    public function a_post_notes_min_3()
+    {
+        $this->sign_in();
+
+        $attributes = Post::factory()->raw(['notes' => '']);
+
+        $this->post('/posts', $attributes)->assertSessionHasErrors('notes');
+    }
+
+    /** @test */
     public function a_post_requires_description()
     {
-                $this->sign_in();
-
+        $this->sign_in();
 
         $attributes = Post::factory()->raw(['description' => '']);
 
@@ -99,7 +161,7 @@ class PostsTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $this->get($post->postManager->path())->assertStatus(403);
+        $this->get($post->path())->assertStatus(403);
 
     }
 
@@ -123,12 +185,14 @@ class PostsTest extends TestCase
         $post = auth()->user()->posts()->create(
             [
                 'title' => $this->faker->sentence,
-                'description' => $this->faker->paragraph
+                'description' => $this->faker->paragraph,
+                'notes' => $this->faker->paragraph,
             ]
         );
 
-        $this->get($post->postManager->path())
+        $this->get($post->path())
             ->assertSee($post->title)
-            ->assertSee($post->description);
+            ->assertSee($post->description)
+            ->assertSee($post->notes);
     }
 }

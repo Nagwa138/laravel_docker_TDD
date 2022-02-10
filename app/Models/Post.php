@@ -13,6 +13,10 @@ class Post extends Model
 
     protected $guarded = [];
 
+//    protected $fillable = ['title', 'description', 'notes', 'owner_id'];
+
+    protected $touches = ['owner'];
+
 //
 //    protected $postManager;
 //
@@ -47,4 +51,8 @@ class Post extends Model
         return "/posts/{$this->id}";
     }
 
+
+    public function activity(){
+        return $this->hasMany(Activity::class);
+    }
 }
