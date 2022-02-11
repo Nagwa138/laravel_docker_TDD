@@ -25,17 +25,17 @@ class ActivityTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $post = PostFactory::create();
+        $this->sign_in();
+
+        $post = PostFactory::ownedBy(auth()->user())->create();
 
         $notes = [
             'notes' => 'hellllo'
         ];
 
-        $this->patch($post->path(), $notes);
+        $this->patch($post->manage()->path(), $notes);
 
         $this->assertDatabaseHas('posts', $notes);
-
-        dd($post);
 
         $this->assertCount(2, $post->activity);
 

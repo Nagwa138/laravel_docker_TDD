@@ -17,7 +17,7 @@ class PostsUnitTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $this->assertEquals('/posts/' . $post->id, $post->path());
+        $this->assertEquals('/posts/' . $post->id, $post->manage()->path());
     }
     /** @test */
     public function it_has_owner()

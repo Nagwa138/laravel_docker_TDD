@@ -17,7 +17,7 @@
 
 @forelse($posts as $post)
 <div class="bg-white mr-4 p-5 m-5 rounded shadow w-1/3" style="height: 200px">
-    <a class="font-normal text-xl py-4 " href="{{$post->path()}}">
+    <a class="font-normal text-xl py-4 " href="{{$post->manage()->path()}}">
         {{ $post->title}}
     </a>
     <div class="text-secondary">

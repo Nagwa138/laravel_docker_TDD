@@ -16,6 +16,7 @@ class PostFactory extends Factory
 
         return [
             'title' => $this->faker->sentence,
+            'notes' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'owner_id' =>function (){
                 return User::factory()->create()->id;

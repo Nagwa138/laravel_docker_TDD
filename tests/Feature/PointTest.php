@@ -15,6 +15,8 @@ class PointTest extends TestCase
     /** @test */
     public function point_have_path(){
 
+        $this->withoutExceptionHandling();
+
         $point = PostPoint::factory()->create();
 
         $this->assertEquals('/posts/' . $point->post_id . '/points/' . $point->id, $point->path());

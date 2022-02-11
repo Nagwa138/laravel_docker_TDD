@@ -21,7 +21,7 @@ class PostsTest extends TestCase
         $this->post('/posts', $post->toArray())->assertRedirect('login');
         $this->get('/posts/create')->assertRedirect('login');
         $this->get('/posts')->assertRedirect('login');
-        $this->get($post->path())->assertRedirect('login');
+        $this->get($post->manage()->path())->assertRedirect('login');
     }
 
 
@@ -42,7 +42,7 @@ class PostsTest extends TestCase
 
         $response = $this->post('/posts', $attributes);
 
-        $response->assertRedirect(Post::where($attributes)->first()->path());
+        $response->assertRedirect(Post::where($attributes)->first()->manage()->path());
 
         $this->assertDatabaseHas('posts', $attributes);
 
@@ -73,7 +73,7 @@ class PostsTest extends TestCase
             'notes' => $this->faker->sentence
         ];
 
-        $this->patch($post->path(), $notes);
+        $this->patch($post->manage()->path(), $notes);
 
         $this->assertDatabaseHas('posts', $notes);
 
@@ -95,7 +95,7 @@ class PostsTest extends TestCase
 
         $this->sign_in();
 
-        $this->patch($post->path(), $notes)
+        $this->patch($post->manage()->path(), $notes)
             ->assertStatus(403);
 
     }
@@ -116,6 +116,8 @@ class PostsTest extends TestCase
     /** @test */
     public function a_post_notes_min_3()
     {
+//        $this->withoutExceptionHandling();
+
         $this->sign_in();
 
         $attributes = Post::factory()->raw(['notes' => '']);
@@ -161,7 +163,7 @@ class PostsTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $this->get($post->path())->assertStatus(403);
+        $this->get($post->manage()->path())->assertStatus(403);
 
     }
 
@@ -190,7 +192,7 @@ class PostsTest extends TestCase
             ]
         );
 
-        $this->get($post->path())
+        $this->get($post->manage()->path())
             ->assertSee($post->title)
             ->assertSee($post->description)
             ->assertSee($post->notes);

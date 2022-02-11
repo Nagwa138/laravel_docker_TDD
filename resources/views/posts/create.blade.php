@@ -3,14 +3,15 @@
 
 @section('content')
 
-                    <form class="box" action="{{route('posts.store')}}" method="post">
+    <form class="box" action="{{route('posts.store')}}" method="post">
 
-                        <div class="title">{{ __('Add Post') }}</div>
+        <div class="title">{{ __('Add Post') }}</div>
 
-                        @csrf
+        @csrf
 
-                        @include('posts.form', [ 'post' => New \App\Models\Post() ,'buttonText' => 'Save'])
-                    </form>
+        @include('posts.form', [ 'post' => New \App\Models\Post() ,'buttonText' => 'Save'])
+
+    </form>
 
 
 @endsection

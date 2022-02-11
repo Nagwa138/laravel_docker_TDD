@@ -13,4 +13,8 @@ class PostPolicy
     public function update(User $user, Post $post){
         return $user->is($post->owner);
     }
+
+    public function show(User $user, Post $post){
+        return $user->is($post->owner);
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\ModelManagers\PostManager;
 use App\Http\Traits\HasTask;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\isInstanceOf;
 
 class Post extends Model
 {
@@ -17,13 +18,22 @@ class Post extends Model
 
     protected $touches = ['owner'];
 
-//
-//    protected $postManager;
+    public $postManager;
+
 //
 //    public function __construct()
 //    {
 //        $this->postManager = new PostManager($this);
 //    }
+
+
+    public function manage(){
+        if(!isInstanceOf(PostManager::class, $this->postManager)){
+            $this->postManager = new PostManager($this);
+        }
+        return new PostManager($this);
+    }
+
 
     public function owner(){
         return $this->belongsTo(User::class);
@@ -33,23 +43,22 @@ class Post extends Model
         return $this->hasMany(PostPoint::class);
     }
 
-    /**
-     * @param string $body
-     * @return $this
-     */
-    public function addPoint(string $body){
-        return  $this->points()->create(compact('body'));
-
-    }
-
-    /**
-     * @return string
-     */
-    public function path()
-    {
-        # code...
-        return "/posts/{$this->id}";
-    }
+//    /**
+//     * @param string $body
+//     * @return $this
+//     */
+//    public function addPoint(string $body){
+//        return  $this->points()->create(compact('body'));
+//    }
+//
+//    /**
+//     * @return string
+//     */
+//    public function path()
+//    {
+//        # code...
+//        return "/posts/{$this->id}";
+//    }
 
 
     public function activity(){

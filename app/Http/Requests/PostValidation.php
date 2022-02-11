@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Auth;
 
 class PostValidation extends FormRequest
 {
@@ -13,7 +14,7 @@ class PostValidation extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -26,7 +27,7 @@ class PostValidation extends FormRequest
         return [
             'title' => 'sometimes|required',
             'description' => 'sometimes|required',
-            'notes' => 'nullable'
+            'notes' => 'min:3'
         ];
     }
 }

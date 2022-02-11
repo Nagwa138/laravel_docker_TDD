@@ -2,6 +2,7 @@
 
 namespace App\Http\ModelManagers;
 use App\Models\Post;
+use App\Models\PostPoint;
 
 class PostManager
 {
@@ -22,12 +23,12 @@ class PostManager
 
     /**
      * @param string $body
-     * @return Post
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function addPoint(string $body){
-        $this->post->points()->create(compact('body'));
 
-        return $this->post;
+        return $this->post->points()->create(compact('body'));
+
     }
 
     /**

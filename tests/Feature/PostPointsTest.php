@@ -20,9 +20,9 @@ class PostPointsTest extends TestCase
         $post = PostFactory::create();
 
         $this->actingAs($post->owner)
-            ->post($post->path() . '/points', ['body' => 'Test Task', 'post_id' => $post->id]);
+            ->post($post->manage()->path() . '/points', ['body' => 'Test Task', 'post_id' => $post->id]);
 
-        $this->get($post->path())
+        $this->get($post->manage()->path() )
             ->assertSee('Test Task');
     }
 
@@ -35,7 +35,7 @@ class PostPointsTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $point = $post->addPoint('Test Task');
+        $point = $post->manage()->addPoint('Test Task');
 
         $this->assertCount(1, $post->points);
 
@@ -53,7 +53,7 @@ class PostPointsTest extends TestCase
 
         $attributes = PostPoint::factory()->raw(['body' => '']);
 
-        $this->post($post->path() . '/points', $attributes)->assertSessionHasErrors('body');
+        $this->post($post->manage()->path()  . '/points', $attributes)->assertSessionHasErrors('body');
 
     }
 
@@ -64,7 +64,7 @@ class PostPointsTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $this->post($post->path() . '/points', ['body' => 'Hello'])
+        $this->post($post->manage()->path()  . '/points', ['body' => 'Hello'])
             ->assertStatus(403);
 
         $this->assertDatabaseMissing('post_points', ['body' => 'Hello']);
@@ -79,7 +79,7 @@ class PostPointsTest extends TestCase
             ->create();
 
         $this->actingAs($post->owner)
-            ->patch($post->path() . '/points/' . $post->points[0]->id , [
+            ->patch($post->manage()->path()  . '/points/' . $post->points[0]->id , [
             'body' => 'welcome',
             'completed' => true,
             'point_id' => $post->points[0]->id
@@ -102,9 +102,9 @@ class PostPointsTest extends TestCase
 
         $post = Post::factory()->create();
 
-        $point = $post->addPoint('Hello There');
+        $point = $post->manage()->addPoint('Hello There');
 
-        $this->patch($post->path() . '/points/' . $point->id , [
+        $this->patch($post->manage()->path()  . '/points/' . $point->id , [
             'body' => 'welcome',
             'completed' => true,
             'point_id' => $point->id
@@ -124,7 +124,7 @@ class PostPointsTest extends TestCase
             ->create();
 
         $this->actingAs($post->owner)
-            ->patch($post->path() . '/points/' . $post->points[0]->id, [
+            ->patch($post->manage()->path()  . '/points/' . $post->points[0]->id, [
             'completed' => true,
             'point_id' => $post->points[0]->id
         ])->assertSessionHasErrors('body');

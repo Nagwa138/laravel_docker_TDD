@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostValidation;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function abort;
 use function auth;
 use function redirect;
@@ -57,11 +58,11 @@ class PostController extends Controller
     public function store(PostValidation $request): \Illuminate\Http\RedirectResponse
     {
 
-       $attributes = $request->validated();
+        $attributes = $request->validated();
 
         $post = auth()->user()->posts()->create($attributes);
 
-        return redirect($post->path());
+        return redirect($post->manage()->path());
 
     }
 
@@ -73,7 +74,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $this->authorize('update', $post);
+        $this->authorize('show', $post);
 
         return view('posts.show', compact('post'));
     }
@@ -94,7 +95,7 @@ class PostController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return bool
+     * @return bool|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Post $post)
     {
@@ -105,6 +106,8 @@ class PostController extends Controller
         ]);
 
         return $post->update($attributes);
+
+//        return redirect($post->manage()->path());
     }
 
     /**

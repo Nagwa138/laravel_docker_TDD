@@ -18,7 +18,7 @@ class PostPoint extends Model
     }
 
     public function path(){
-        return $this->post->path() . '/points/' . $this->id;
+        return $this->post->manage()->path() . '/points/' . $this->id;
     }
 
 }

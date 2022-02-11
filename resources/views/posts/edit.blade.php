@@ -3,11 +3,13 @@
 
 @section('content')
 
-    <form class="box" action="{{route('posts.store')}}" method="post">
+    <form class="box" action="{{route('posts.update', $post->id)}}" method="post">
 
         <div class="title">{{ __('Edit Post') }}</div>
 
         @csrf
+
+        @method('PUT')
 
         @include('posts.form', ['buttonText' => 'Update'])
 
